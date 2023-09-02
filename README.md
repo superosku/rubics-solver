@@ -1,7 +1,7 @@
 
-# Rubics Cube Solver
+# Rubik's Cube Solver
 
-This is my rubics cube solver written in rust
+This is my rubics cube solver written in rust. It utilizes a two-way breadth first search to find the shortest path to the solved state. 
 
 Run:
 ```
