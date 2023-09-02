@@ -872,7 +872,7 @@ fn get_solution_from_hashmap(
         let lookup_rotation = hash_map.get(&lookup_hash).unwrap();
         match lookup_rotation {
             Some(rotation) => {
-                println!("ROTATION {:?}", rotation);
+                // println!("ROTATION {:?}", rotation);
                 lookup_cube = lookup_cube.rotate(&rotation.reverse());
                 lookup_hash = lookup_cube.get_hash();
                 solution_rotations.push(if reverse {rotation.reverse()} else {rotation.clone()});
@@ -916,7 +916,7 @@ fn print_solution(start_cube: &Cube, rotations: &Vec<Rotation>) {
     }
     cube.print();
 
-    println!("SOLUTION:");
+    println!("SOLUTION MOVES:");
     for rotation in rotations.iter() {
         print!("{:?} ", rotation);
     }
@@ -928,7 +928,7 @@ fn extend_breath_first_search(
     new_cubes: &mut Vec<Cube>,
     hashes: &mut HashMap<Hash, Option<Rotation>>,
     other_hashes: &HashMap<Hash, Option<Rotation>>,
-) -> bool {
+) -> Option<Vec<Rotation>> {
     let all_rotations: Vec<Rotation> = vec![
         Rotation::U,
         Rotation::D,
@@ -957,59 +957,80 @@ fn extend_breath_first_search(
                 continue;
             }
             hashes.insert(hash, Some(rotation.clone()));
-            new_cubes.push(rotated_cube);
-
             if other_hashes.contains_key(&hash) {
-                return true;
+                let solution_rotations = get_solution_from_two_way_hashmaps(
+                    hash,
+                    &rotated_cube,
+                    &hashes,
+                    &other_hashes,
+                ).unwrap();
+                return Some(solution_rotations)
             }
+            new_cubes.push(rotated_cube);
         }
     }
 
-    return false;
+    return None
+}
+
+fn rotations_reversed(rotations: &Vec<Rotation>) -> Vec<Rotation> {
+    let mut reversed_rotations: Vec<Rotation> = vec![];
+    for rotation in rotations.iter().rev() {
+        reversed_rotations.push(rotation.reverse());
+    }
+    reversed_rotations
 }
 
 fn solve_cube_two_way_breath_first(start_cube: &Cube, end_cube: &Cube) -> Option<Vec<Rotation>> {
-    let mut solution_rotations: Vec<Rotation> = vec![];
+    let mut a_hashes: HashMap<Hash, Option<Rotation>> = HashMap::new();
+    let mut a_old_cubes: Vec<Cube> = vec![end_cube.clone()];
+    let mut a_new_cubes: Vec<Cube> = Vec::new();
+    a_hashes.insert(end_cube.get_hash(), None);
 
-    let mut hashes: HashMap<Hash, Option<Rotation>> = HashMap::new();
-    let mut old_cubes: Vec<Cube> = vec![end_cube.clone()];
-    let mut new_cubes: Vec<Cube> = Vec::new();
-    hashes.insert(end_cube.get_hash(), None);
+    let mut b_hashes: HashMap<Hash, Option<Rotation>> = HashMap::new();
+    let mut b_old_cubes: Vec<Cube> = vec![start_cube.clone()];
+    let mut b_new_cubes: Vec<Cube> = Vec::new();
+    b_hashes.insert(start_cube.get_hash(), None);
 
-    for _ in 0..5 {
-        extend_breath_first_search(
-            &old_cubes,
-            &mut new_cubes,
-            &mut hashes,
-            &HashMap::new(),
-        );
-        old_cubes = new_cubes;
-        new_cubes = Vec::new();
-    }
-
-    let other_hashes = hashes;
-
-    let mut hashes: HashMap<Hash, Option<Rotation>> = HashMap::new();
-    let mut old_cubes: Vec<Cube> = vec![start_cube.clone()];
-    let mut new_cubes: Vec<Cube> = Vec::new();
-    hashes.insert(start_cube.get_hash(), None);
-
-    for _ in 0..5 {
+    for _ in 0..10 {
+        // 1 step of front
+        println!("Front step");
         let found_solution = extend_breath_first_search(
-            &old_cubes,
-            &mut new_cubes,
-            &mut hashes,
-            &other_hashes,
+            &a_old_cubes,
+            &mut a_new_cubes,
+            &mut a_hashes,
+            &b_hashes,
         );
-        if found_solution {
-            println!("FOUND SOLUTION");
-            return None
+        match found_solution {
+            Some(solution) => {
+                println!("FOUND SOLUTION REVERSE");
+                return Some(solution)
+            },
+            None => {}
         }
-        old_cubes = new_cubes;
-        new_cubes = Vec::new();
+        a_old_cubes = a_new_cubes;
+        a_new_cubes = Vec::new();
+
+        // 1 step of back
+        println!("Back step");
+        let found_solution = extend_breath_first_search(
+            &b_old_cubes,
+            &mut b_new_cubes,
+            &mut b_hashes,
+            &a_hashes,
+        );
+        match found_solution {
+            Some(solution) => {
+                println!("FOUND SOLUTION");
+                return Some(rotations_reversed(&solution))
+            },
+            None => {}
+        }
+        b_old_cubes = b_new_cubes;
+        b_new_cubes = Vec::new();
     }
 
-    Some(solution_rotations)
+    None
 }
 
 
@@ -1037,17 +1058,27 @@ fn main() {
     // solved_cube.print();
 
     // println!("GOAL CUBE:");
-    // let mut start_cube = Cube::new();
-    // start_cube.set_at(2, 3, 1);
-    // start_cube.set_at(2, 5, 3);
-    // start_cube.set_at(1, 5, 2);
-    // start_cube.set_at(3, 3, 2);
+    let mut start_cube = Cube::new();
+    start_cube.set_at(2, 3, 1);
+    start_cube.set_at(2, 5, 3);
+    start_cube.set_at(1, 5, 2);
+    start_cube.set_at(3, 3, 2);
     // start_cube.print();
     // println!();
 
-    let start_cube = Cube::new_shuffled(12);
+    // let start_cube = Cube::new_shuffled(17);
 
-    solve_cube_two_way_breath_first(&start_cube, &solved_cube);
+    let solution = solve_cube_two_way_breath_first(&start_cube, &solved_cube);
+
+    match solution {
+        Some(solution) => {
+            println!("SOLUTION a):");
+            print_solution(&start_cube, &solution);
+        },
+        None => {
+            println!("NO SOLUTION FOUND");
+        }
+    }
 
     return;
 
