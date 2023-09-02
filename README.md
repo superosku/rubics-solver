@@ -26,3 +26,6 @@ Move, Permutations previous, Permutations next, Hash collisions, Collisions tota
 ```
 The permutations match to what is found in https://oeis.org/A080602 , so the algorithm should be correct.
 
+Screenshot of the program and its colored ascii output:
+
+![Screenshot](screenshot.png)
