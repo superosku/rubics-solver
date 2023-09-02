@@ -857,6 +857,35 @@ type Hash = [u64; 3];
 // type Hash = [u8; 8 * 6];
 
 
+fn get_solution_from_hashmap(
+    middle_hash: Hash,
+    middle_cube: &Cube,
+    hash_map: &HashMap<Hash, Option<Rotation>>,
+    reverse: bool
+) -> Option<Vec<Rotation>> {
+    let mut solution_rotations: Vec<Rotation> = vec![];
+
+    // Find route forward
+    let mut lookup_cube = middle_cube.clone();
+    let mut lookup_hash = middle_hash;
+    loop {
+        let lookup_rotation = hash_map.get(&lookup_hash).unwrap();
+        match lookup_rotation {
+            Some(rotation) => {
+                println!("ROTATION {:?}", rotation);
+                lookup_cube = lookup_cube.rotate(&rotation.reverse());
+                lookup_hash = lookup_cube.get_hash();
+                solution_rotations.push(if reverse {rotation.reverse()} else {rotation.clone()});
+            },
+            None => {
+                break
+            }
+        }
+    }
+    Some(solution_rotations)
+}
+
+
 fn get_solution_from_two_way_hashmaps(
     middle_hash: Hash,
     middle_cube: &Cube,
@@ -865,40 +894,14 @@ fn get_solution_from_two_way_hashmaps(
 ) -> Option<Vec<Rotation>> {
     let mut solution_rotations: Vec<Rotation> = vec![];
 
-    // Find route forward
-    let mut lookup_cube = middle_cube.clone();
-    let mut lookup_hash = middle_hash;
-    loop {
-        let lookup_rotation = end_hashes.get(&lookup_hash).unwrap();
-        match lookup_rotation {
-            Some(rotation) => {
-                println!("ROTATION {:?}", rotation);
-                lookup_cube = lookup_cube.rotate(&rotation.reverse());
-                lookup_hash = lookup_cube.get_hash();
-                solution_rotations.insert(0, rotation.clone());
-            },
-            None => {
-                break
-            }
-        }
+    let forward_solution = get_solution_from_hashmap(middle_hash, middle_cube, end_hashes, false).unwrap();
+    for rotation in forward_solution.iter().rev() {
+        solution_rotations.push(rotation.clone());
     }
-    // Find route backward
-    let mut lookup_cube = middle_cube.clone();
-    let mut lookup_hash = middle_hash;
-    loop {
-        let lookup_rotation = begin_hashes.get(&lookup_hash).unwrap();
-        match lookup_rotation {
-            Some(rotation) => {
-                println!("ROTATION {:?}", rotation);
-                lookup_cube = lookup_cube.rotate(&rotation.reverse());
-                lookup_hash = lookup_cube.get_hash();
-                solution_rotations.push(rotation.reverse());
-            },
-            None => {
-                println!("STUFF DONE 2");
-                break
-            }
-        }
+
+    let backward_solution = get_solution_from_hashmap(middle_hash, middle_cube, begin_hashes, true).unwrap();
+    for rotation in backward_solution.iter() {
+        solution_rotations.push(rotation.clone());
     }
 
     Some(solution_rotations)
