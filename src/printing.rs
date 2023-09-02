@@ -16,146 +16,146 @@ fn colorize(color: u8) -> colored::ColoredString {
 }
 
 impl Cube {
-    fn print_debug(&self) {
-        for _ in 0..10 {
-            print!(" ")
-        }
-        print!("{:02} ", self.sides[0].colors[0]);
-        print!("{:02} ", self.sides[0].colors[1]);
-        print!("{:02} ", self.sides[0].colors[2]);
-        println!("");
-        for _ in 0..10 {
-            print!(" ")
-        }
-        print!("{:02} ", self.sides[0].colors[3]);
-        print!("{:02} ", 0);
-        print!("{:02} ", self.sides[0].colors[4]);
-        println!("");
-        for _ in 0..10 {
-            print!(" ")
-        }
-        print!("{:02} ", self.sides[0].colors[5]);
-        print!("{:02} ", self.sides[0].colors[6]);
-        print!("{:02} ", self.sides[0].colors[7]);
-        println!("");
-        println!("");
-        // Sides 1-4
-        for i in 1..5 {
-            print!("{:02} ", self.sides[i].colors[0]);
-            print!("{:02} ", self.sides[i].colors[1]);
-            print!("{:02} ", self.sides[i].colors[2]);
-            print!(" ");
-        }
-        println!("");
-        for i in 1..5 {
-            print!("{:02} ", self.sides[i].colors[3]);
-            print!("{:02} ", i);
-            print!("{:02} ", self.sides[i].colors[4]);
-            print!(" ");
-        }
-        println!("");
-        for i in 1..5 {
-            print!("{:02} ", self.sides[i].colors[5]);
-            print!("{:02} ", self.sides[i].colors[6]);
-            print!("{:02} ", self.sides[i].colors[7]);
-            print!(" ");
-        }
-        println!("");
-        println!("");
-        // Side 5
-        for _ in 0..10 {
-            print!(" ")
-        }
-        print!("{:02} ", self.sides[5].colors[0]);
-        print!("{:02} ", self.sides[5].colors[1]);
-        print!("{:02} ", self.sides[5].colors[2]);
-        println!("");
-        for _ in 0..10 {
-            print!(" ")
-        }
-        print!("{:02} ", self.sides[5].colors[3]);
-        print!("{:02} ", 5);
-        print!("{:02} ", self.sides[5].colors[4]);
-        println!("");
-        for _ in 0..10 {
-            print!(" ")
-        }
-        print!("{:02} ", self.sides[5].colors[5]);
-        print!("{:02} ", self.sides[5].colors[6]);
-        print!("{:02} ", self.sides[5].colors[7]);
-        println!("");
-    }
-
-    fn print_diff(&self, other: &Cube) {
-        println!("Cube:");
-        for _ in 0..4 {
-            print!(" ")
-        }
-        print!("{}", if self.sides[0].colors[0] == other.sides[0].colors[0] {"."} else {"#"});
-        print!("{}", if self.sides[0].colors[1] == other.sides[0].colors[1] {"."} else {"#"});
-        print!("{}", if self.sides[0].colors[2] == other.sides[0].colors[2] {"."} else {"#"});
-        println!("");
-        for _ in 0..4 {
-            print!(" ")
-        }
-        print!("{}", if self.sides[0].colors[3] == other.sides[0].colors[3] {"."} else {"#"});
-        print!(".");
-        print!("{}", if self.sides[0].colors[4] == other.sides[0].colors[4] {"."} else {"#"});
-        println!("");
-        for _ in 0..4 {
-            print!(" ")
-        }
-        print!("{}", if self.sides[0].colors[5] == other.sides[0].colors[5] {"."} else {"#"});
-        print!("{}", if self.sides[0].colors[6] == other.sides[0].colors[6] {"."} else {"#"});
-        print!("{}", if self.sides[0].colors[7] == other.sides[0].colors[7] {"."} else {"#"});
-        println!("");
-        println!("");
-        // Sides 1-4
-        for i in 1..5 {
-            print!("{}", if self.sides[i].colors[0] == other.sides[i].colors[0] {"."} else {"#"});
-            print!("{}", if self.sides[i].colors[1] == other.sides[i].colors[1] {"."} else {"#"});
-            print!("{}", if self.sides[i].colors[2] == other.sides[i].colors[2] {"."} else {"#"});
-            print!(" ");
-        }
-        println!("");
-        for i in 1..5 {
-            print!("{}", if self.sides[i].colors[3] == other.sides[i].colors[3] {"."} else {"#"});
-            print!(".");
-            print!("{}", if self.sides[i].colors[4] == other.sides[i].colors[4] {"."} else {"#"});
-            print!(" ");
-        }
-        println!("");
-        for i in 1..5 {
-            print!("{}", if self.sides[i].colors[5] == other.sides[i].colors[5] {"."} else {"#"});
-            print!("{}", if self.sides[i].colors[6] == other.sides[i].colors[6] {"."} else {"#"});
-            print!("{}", if self.sides[i].colors[7] == other.sides[i].colors[7] {"."} else {"#"});
-            print!(" ");
-        }
-        println!("");
-        println!("");
-        // Side 5
-        for _ in 0..4 {
-            print!(" ")
-        }
-        print!("{}", if self.sides[5].colors[0] == other.sides[5].colors[0] {"."} else {"#"});
-        print!("{}", if self.sides[5].colors[1] == other.sides[5].colors[1] {"."} else {"#"});
-        print!("{}", if self.sides[5].colors[2] == other.sides[5].colors[2] {"."} else {"#"});
-        println!("");
-        for _ in 0..4 {
-            print!(" ")
-        }
-        print!("{}", if self.sides[5].colors[3] == other.sides[5].colors[3] {"."} else {"#"});
-        print!(".");
-        print!("{}", if self.sides[5].colors[4] == other.sides[5].colors[4] {"."} else {"#"});
-        println!("");
-        for _ in 0..4 {
-            print!(" ")
-        }
-        print!("{}", if self.sides[5].colors[5] == other.sides[5].colors[5] {"."} else {"#"});
-        print!("{}", if self.sides[5].colors[6] == other.sides[5].colors[6] {"."} else {"#"});
-        print!("{}", if self.sides[5].colors[7] == other.sides[5].colors[7] {"."} else {"#"});
-        println!("");
-    }
+    // fn print_debug(&self) {
+    //     for _ in 0..10 {
+    //         print!(" ")
+    //     }
+    //     print!("{:02} ", self.sides[0].colors[0]);
+    //     print!("{:02} ", self.sides[0].colors[1]);
+    //     print!("{:02} ", self.sides[0].colors[2]);
+    //     println!("");
+    //     for _ in 0..10 {
+    //         print!(" ")
+    //     }
+    //     print!("{:02} ", self.sides[0].colors[3]);
+    //     print!("{:02} ", 0);
+    //     print!("{:02} ", self.sides[0].colors[4]);
+    //     println!("");
+    //     for _ in 0..10 {
+    //         print!(" ")
+    //     }
+    //     print!("{:02} ", self.sides[0].colors[5]);
+    //     print!("{:02} ", self.sides[0].colors[6]);
+    //     print!("{:02} ", self.sides[0].colors[7]);
+    //     println!("");
+    //     println!("");
+    //     // Sides 1-4
+    //     for i in 1..5 {
+    //         print!("{:02} ", self.sides[i].colors[0]);
+    //         print!("{:02} ", self.sides[i].colors[1]);
+    //         print!("{:02} ", self.sides[i].colors[2]);
+    //         print!(" ");
+    //     }
+    //     println!("");
+    //     for i in 1..5 {
+    //         print!("{:02} ", self.sides[i].colors[3]);
+    //         print!("{:02} ", i);
+    //         print!("{:02} ", self.sides[i].colors[4]);
+    //         print!(" ");
+    //     }
+    //     println!("");
+    //     for i in 1..5 {
+    //         print!("{:02} ", self.sides[i].colors[5]);
+    //         print!("{:02} ", self.sides[i].colors[6]);
+    //         print!("{:02} ", self.sides[i].colors[7]);
+    //         print!(" ");
+    //     }
+    //     println!("");
+    //     println!("");
+    //     // Side 5
+    //     for _ in 0..10 {
+    //         print!(" ")
+    //     }
+    //     print!("{:02} ", self.sides[5].colors[0]);
+    //     print!("{:02} ", self.sides[5].colors[1]);
+    //     print!("{:02} ", self.sides[5].colors[2]);
+    //     println!("");
+    //     for _ in 0..10 {
+    //         print!(" ")
+    //     }
+    //     print!("{:02} ", self.sides[5].colors[3]);
+    //     print!("{:02} ", 5);
+    //     print!("{:02} ", self.sides[5].colors[4]);
+    //     println!("");
+    //     for _ in 0..10 {
+    //         print!(" ")
+    //     }
+    //     print!("{:02} ", self.sides[5].colors[5]);
+    //     print!("{:02} ", self.sides[5].colors[6]);
+    //     print!("{:02} ", self.sides[5].colors[7]);
+    //     println!("");
+    // }
+    //
+    // fn print_diff(&self, other: &Cube) {
+    //     println!("Cube:");
+    //     for _ in 0..4 {
+    //         print!(" ")
+    //     }
+    //     print!("{}", if self.sides[0].colors[0] == other.sides[0].colors[0] {"."} else {"#"});
+    //     print!("{}", if self.sides[0].colors[1] == other.sides[0].colors[1] {"."} else {"#"});
+    //     print!("{}", if self.sides[0].colors[2] == other.sides[0].colors[2] {"."} else {"#"});
+    //     println!("");
+    //     for _ in 0..4 {
+    //         print!(" ")
+    //     }
+    //     print!("{}", if self.sides[0].colors[3] == other.sides[0].colors[3] {"."} else {"#"});
+    //     print!(".");
+    //     print!("{}", if self.sides[0].colors[4] == other.sides[0].colors[4] {"."} else {"#"});
+    //     println!("");
+    //     for _ in 0..4 {
+    //         print!(" ")
+    //     }
+    //     print!("{}", if self.sides[0].colors[5] == other.sides[0].colors[5] {"."} else {"#"});
+    //     print!("{}", if self.sides[0].colors[6] == other.sides[0].colors[6] {"."} else {"#"});
+    //     print!("{}", if self.sides[0].colors[7] == other.sides[0].colors[7] {"."} else {"#"});
+    //     println!("");
+    //     println!("");
+    //     // Sides 1-4
+    //     for i in 1..5 {
+    //         print!("{}", if self.sides[i].colors[0] == other.sides[i].colors[0] {"."} else {"#"});
+    //         print!("{}", if self.sides[i].colors[1] == other.sides[i].colors[1] {"."} else {"#"});
+    //         print!("{}", if self.sides[i].colors[2] == other.sides[i].colors[2] {"."} else {"#"});
+    //         print!(" ");
+    //     }
+    //     println!("");
+    //     for i in 1..5 {
+    //         print!("{}", if self.sides[i].colors[3] == other.sides[i].colors[3] {"."} else {"#"});
+    //         print!(".");
+    //         print!("{}", if self.sides[i].colors[4] == other.sides[i].colors[4] {"."} else {"#"});
+    //         print!(" ");
+    //     }
+    //     println!("");
+    //     for i in 1..5 {
+    //         print!("{}", if self.sides[i].colors[5] == other.sides[i].colors[5] {"."} else {"#"});
+    //         print!("{}", if self.sides[i].colors[6] == other.sides[i].colors[6] {"."} else {"#"});
+    //         print!("{}", if self.sides[i].colors[7] == other.sides[i].colors[7] {"."} else {"#"});
+    //         print!(" ");
+    //     }
+    //     println!("");
+    //     println!("");
+    //     // Side 5
+    //     for _ in 0..4 {
+    //         print!(" ")
+    //     }
+    //     print!("{}", if self.sides[5].colors[0] == other.sides[5].colors[0] {"."} else {"#"});
+    //     print!("{}", if self.sides[5].colors[1] == other.sides[5].colors[1] {"."} else {"#"});
+    //     print!("{}", if self.sides[5].colors[2] == other.sides[5].colors[2] {"."} else {"#"});
+    //     println!("");
+    //     for _ in 0..4 {
+    //         print!(" ")
+    //     }
+    //     print!("{}", if self.sides[5].colors[3] == other.sides[5].colors[3] {"."} else {"#"});
+    //     print!(".");
+    //     print!("{}", if self.sides[5].colors[4] == other.sides[5].colors[4] {"."} else {"#"});
+    //     println!("");
+    //     for _ in 0..4 {
+    //         print!(" ")
+    //     }
+    //     print!("{}", if self.sides[5].colors[5] == other.sides[5].colors[5] {"."} else {"#"});
+    //     print!("{}", if self.sides[5].colors[6] == other.sides[5].colors[6] {"."} else {"#"});
+    //     print!("{}", if self.sides[5].colors[7] == other.sides[5].colors[7] {"."} else {"#"});
+    //     println!("");
+    // }
 
     fn print(&self) {
         self.print_rot_op(None)
@@ -169,39 +169,39 @@ impl Cube {
         for _ in 0..4 {
             print!(" ")
         }
-        print!("{}", colorize(self.sides[0].colors[0]));
-        print!("{}", colorize(self.sides[0].colors[1]));
-        print!("{}", colorize(self.sides[0].colors[2]));
+        print!("{}", colorize(self.get_at(0, 0)));
+        print!("{}", colorize(self.get_at(0, 1)));
+        print!("{}", colorize(self.get_at(0, 2)));
         println!("");
         for _ in 0..4 {
             print!(" ")
         }
-        print!("{}", colorize(self.sides[0].colors[3]));
+        print!("{}", colorize(self.get_at(0, 3)));
         match rotation {
             Some(Rotation::Dr) => {print!("{}", '\u{21A9}');}
             Some(Rotation::D) => {print!("{}", '\u{21AA}');}
             _ => {print!("{}", colorize(0));}
         }
-        print!("{}", colorize(self.sides[0].colors[4]));
+        print!("{}", colorize(self.get_at(0, 5)));
         println!("");
         for _ in 0..4 {
             print!(" ")
         }
-        print!("{}", colorize(self.sides[0].colors[5]));
-        print!("{}", colorize(self.sides[0].colors[6]));
-        print!("{}", colorize(self.sides[0].colors[7]));
+        print!("{}", colorize(self.get_at(0, 6)));
+        print!("{}", colorize(self.get_at(0, 7)));
+        print!("{}", colorize(self.get_at(0, 8)));
         println!("");
         println!("");
         // Sides 1-4
         for i in 1..5 {
-            print!("{}", colorize(self.sides[i].colors[0]));
-            print!("{}", colorize(self.sides[i].colors[1]));
-            print!("{}", colorize(self.sides[i].colors[2]));
+            print!("{}", colorize(self.get_at(i, 0)));
+            print!("{}", colorize(self.get_at(i, 1)));
+            print!("{}", colorize(self.get_at(i, 2)));
             print!(" ");
         }
         println!("");
         for i in 1..5 {
-            print!("{}", colorize(self.sides[i].colors[3]));
+            print!("{}", colorize(self.get_at(i, 3)));
             match i {
                 1 => {
                     match rotation {
@@ -236,14 +236,14 @@ impl Cube {
                     abort();
                 }
             }
-            print!("{}", colorize(self.sides[i].colors[4]));
+            print!("{}", colorize(self.get_at(i, 5)));
             print!(" ");
         }
         println!("");
         for i in 1..5 {
-            print!("{}", colorize(self.sides[i].colors[5]));
-            print!("{}", colorize(self.sides[i].colors[6]));
-            print!("{}", colorize(self.sides[i].colors[7]));
+            print!("{}", colorize(self.get_at(i, 6)));
+            print!("{}", colorize(self.get_at(i, 7)));
+            print!("{}", colorize(self.get_at(i, 8)));
             print!(" ");
         }
         println!("");
@@ -252,27 +252,27 @@ impl Cube {
         for _ in 0..4 {
             print!(" ")
         }
-        print!("{}", colorize(self.sides[5].colors[0]));
-        print!("{}", colorize(self.sides[5].colors[1]));
-        print!("{}", colorize(self.sides[5].colors[2]));
+        print!("{}", colorize(self.get_at(5, 0)));
+        print!("{}", colorize(self.get_at(5, 1)));
+        print!("{}", colorize(self.get_at(5, 2)));
         println!("");
         for _ in 0..4 {
             print!(" ")
         }
-        print!("{}", colorize(self.sides[5].colors[3]));
+        print!("{}", colorize(self.get_at(5, 3)));
         match rotation {
             Some(Rotation::U) => {print!("{}", '\u{21A9}'.to_string().yellow());}
             Some(Rotation::Ur) => {print!("{}", '\u{21AA}'.to_string().yellow());}
             _ => {print!("{}", colorize(5));}
         }
-        print!("{}", colorize(self.sides[5].colors[4]));
+        print!("{}", colorize(self.get_at(5, 5)));
         println!("");
         for _ in 0..4 {
             print!(" ")
         }
-        print!("{}", colorize(self.sides[5].colors[5]));
-        print!("{}", colorize(self.sides[5].colors[6]));
-        print!("{}", colorize(self.sides[5].colors[7]));
+        print!("{}", colorize(self.get_at(5, 6)));
+        print!("{}", colorize(self.get_at(5, 7)));
+        print!("{}", colorize(self.get_at(5, 8)));
         println!("");
     }
 }

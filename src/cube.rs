@@ -15,8 +15,7 @@ impl Side {
 
 #[derive(Clone)]
 pub struct Cube {
-    // TODO Should not be pub but accessed through get and set methods
-    pub sides: [Side; 6],
+    sides: [Side; 6],
 }
 
 #[derive(Debug, Clone)]
@@ -490,15 +489,6 @@ impl Cube {
 
     fn get_rotations(&self) -> Vec<Cube> {
         let mut rotations = Vec::new();
-
-        // rotations.push(self.rotate_2().rotate_2());
-        // rotations.push(self.rotate_3());
-        // rotations.push(self.rotate_5());
-
-        // rotations.push(self.rotate_1().rotate_1());
-        // rotations.push(self.rotate_4().rotate_4());
-        // rotations.push(self.rotate_6().rotate_6());
-
         rotations.push(self.rotate_1());
         rotations.push(self.rotate_2());
         rotations.push(self.rotate_3());
@@ -538,50 +528,10 @@ impl Cube {
         }
         hash
     }
-
-    // fn get_hash(&self) -> Hash {
-    //     let mut hash: [u8; 48] = [0; 48];
-    //     let mut hash_index = 0;
-    //     for i in 0..9 {
-    //         for j in 0..6 {
-    //             if i == 4 {
-    //                 continue;
-    //             }
-    //             let value = self.get_at(j, i);
-    //             hash[hash_index] = value;
-    //             hash_index += 1;
-    //         }
-    //     }
-    //     // println!("Hash: {:#64b} {:#64b}", hash1, hash2);
-    //     hash
-    // }
-
-    // fn from_hash(hash: Hash) -> Cube {
-    //     let mut cube = Cube::new();
-    //     let mut hash1 = hash[0];
-    //     let mut hash2 = hash[1];
-    //     for i in 0..9 {
-    //         for j in 0..6 {
-    //             if i == 4 {
-    //                 continue;
-    //             }
-    //             let index = i * 6 + j;
-    //             if index <= 20 {
-    //                 let fixed_index = index;
-    //
-    //             } else {
-    //                 let fixed_index = index - 20;
-    //
-    //             }
-    //         }
-    //     }
-    //     cube
-    // }
 }
 
 
 type Hash = [u64; 3];
-// type Hash = [u8; 8 * 6];
 
 
 fn get_solution_from_hashmap(
@@ -599,7 +549,6 @@ fn get_solution_from_hashmap(
         let lookup_rotation = hash_map.get(&lookup_hash).unwrap();
         match lookup_rotation {
             Some(rotation) => {
-                // println!("ROTATION {:?}", rotation);
                 lookup_cube = lookup_cube.rotate(&rotation.reverse());
                 lookup_hash = lookup_cube.get_hash();
                 solution_rotations.push(if reverse {rotation.reverse()} else {rotation.clone()});
@@ -705,13 +654,13 @@ pub fn solve_cube_two_way_breath_first(start_cube: &Cube, end_cube: &Cube) -> Op
 
     for _ in 0..10 {
         // 1 step of front
-        println!("Front step");
         let found_solution = extend_breath_first_search(
             &a_old_cubes,
             &mut a_new_cubes,
             &mut a_hashes,
             &b_hashes,
         );
+        println!("Front step {} {} {}", a_old_cubes.len(), a_new_cubes.len(), a_hashes.len());
         match found_solution {
             Some(solution) => {
                 println!("FOUND SOLUTION REVERSE");
@@ -723,13 +672,13 @@ pub fn solve_cube_two_way_breath_first(start_cube: &Cube, end_cube: &Cube) -> Op
         a_new_cubes = Vec::new();
 
         // 1 step of back
-        println!("Back step");
         let found_solution = extend_breath_first_search(
             &b_old_cubes,
             &mut b_new_cubes,
             &mut b_hashes,
             &a_hashes,
         );
+        println!("Back step {} {} {}", b_old_cubes.len(), b_new_cubes.len(), b_hashes.len());
         match found_solution {
             Some(solution) => {
                 println!("FOUND SOLUTION");
