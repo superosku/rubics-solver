@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use colored::Colorize;
 use std::process::abort;
+use rand::Rng;
 
 
 #[derive(Clone)]
@@ -80,6 +81,20 @@ impl Cube {
                 Side::new_full(5),
             ]
         }
+    }
+
+    fn new_shuffled(shuffles: u32) -> Cube {
+        let mut rng = rand::thread_rng();
+        let mut new = Cube::new();
+        for _ in 0..shuffles {
+            let rotations = new.get_rotations();
+            // Choose random rotation
+            let random_index = (rng.gen::<f64>() * rotations.len() as f64) as usize;
+            let rotation = rotations[random_index].clone();
+            new = rotation;
+            // new = new.rotate(&rotation);
+        }
+        new
     }
 
     fn new_debug() -> Cube {
@@ -842,6 +857,77 @@ type Hash = [u64; 3];
 // type Hash = [u8; 8 * 6];
 
 
+fn get_solution_from_two_way_hashmaps(
+    middle_hash: Hash,
+    middle_cube: &Cube,
+    begin_hashes: &HashMap<Hash, Option<Rotation>>,
+    end_hashes: &HashMap<Hash, Option<Rotation>>
+) -> Option<Vec<Rotation>> {
+    let mut solution_rotations: Vec<Rotation> = vec![];
+
+    // Find route forward
+    let mut lookup_cube = middle_cube.clone();
+    let mut lookup_hash = middle_hash;
+    loop {
+        let lookup_rotation = end_hashes.get(&lookup_hash).unwrap();
+        match lookup_rotation {
+            Some(rotation) => {
+                println!("ROTATION {:?}", rotation);
+                lookup_cube = lookup_cube.rotate(&rotation.reverse());
+                lookup_hash = lookup_cube.get_hash();
+                solution_rotations.insert(0, rotation.clone());
+            },
+            None => {
+                break
+            }
+        }
+    }
+    // Find route backward
+    let mut lookup_cube = middle_cube.clone();
+    let mut lookup_hash = middle_hash;
+    loop {
+        let lookup_rotation = begin_hashes.get(&lookup_hash).unwrap();
+        match lookup_rotation {
+            Some(rotation) => {
+                println!("ROTATION {:?}", rotation);
+                lookup_cube = lookup_cube.rotate(&rotation.reverse());
+                lookup_hash = lookup_cube.get_hash();
+                solution_rotations.push(rotation.reverse());
+            },
+            None => {
+                println!("STUFF DONE 2");
+                break
+            }
+        }
+    }
+
+    Some(solution_rotations)
+}
+
+fn solve_cube_two_way_breath_first(start_cube: &Cube, end_cube: &Cube) -> Option<Vec<Rotation>> {
+    let mut solution_rotations: Vec<Rotation> = vec![];
+
+    Some(solution_rotations)
+}
+
+fn print_solution(start_cube: &Cube, rotations: &Vec<Rotation>) {
+    let mut cube = start_cube.clone();
+    for rotation in rotations.iter() {
+        cube.print_rot(rotation);
+        println!();
+        cube = cube.rotate(rotation);
+    }
+    cube.print();
+
+    println!("SOLUTION:");
+    for rotation in rotations.iter() {
+        print!("{:?} ", rotation);
+    }
+    println!("");
+
+}
+
+
 fn main() {
     {
         let cube = Cube::new_debug();
@@ -864,17 +950,19 @@ fn main() {
 
     // let cube = Cube::new();
     println!("CUBE:");
-    let cube = Cube::new();
-    cube.print();
+    let solved_cube= Cube::new();
+    solved_cube.print();
 
     println!("GOAL CUBE:");
-    let mut goal_cube = Cube::new();
-    goal_cube.set_at(2, 3, 1);
-    goal_cube.set_at(2, 5, 3);
-    goal_cube.set_at(1, 5, 2);
-    goal_cube.set_at(3, 3, 2);
-    goal_cube.print();
+    let mut start_cube = Cube::new();
+    start_cube.set_at(2, 3, 1);
+    start_cube.set_at(2, 5, 3);
+    start_cube.set_at(1, 5, 2);
+    start_cube.set_at(3, 3, 2);
+    start_cube.print();
     println!();
+
+    let start_cube = Cube::new_shuffled(8);
 
     // return;
 
@@ -923,13 +1011,13 @@ fn main() {
 
     let mut hashes: HashMap<Hash, Option<Rotation>> = HashMap::new();
     {
-        let mut old_cubes: Vec<Cube> = vec![cube.clone()];
+        let mut old_cubes: Vec<Cube> = vec![solved_cube.clone()];
         let mut new_cubes: Vec<Cube> = Vec::new();
 
-        hashes.insert(cube.get_hash(), None);
+        hashes.insert(solved_cube.get_hash(), None);
 
         let mut hash_collisions_total = 0;
-        for _ in 0..7 {
+        for _ in 0..5 {
             let mut hash_collisions = 0;
 
             for cube in old_cubes.iter() {
@@ -960,13 +1048,13 @@ fn main() {
 
     {
         let mut goal_hashes: HashMap<Hash, Option<Rotation>> = HashMap::new();
-        let mut old_cubes: Vec<Cube> = vec![goal_cube.clone()];
+        let mut old_cubes: Vec<Cube> = vec![start_cube.clone()];
         let mut new_cubes: Vec<Cube> = Vec::new();
 
-        goal_hashes.insert(goal_cube.get_hash(), None);
+        goal_hashes.insert(start_cube.get_hash(), None);
 
         let mut hash_collisions_total = 0;
-        for _ in 0..7 {
+        for _ in 0..5 {
             let mut hash_collisions = 0;
 
             for cube in old_cubes.iter() {
@@ -984,60 +1072,15 @@ fn main() {
                     goal_hashes.insert(hash, Some(rotation.clone()));
 
                     if hashes.contains_key(&hash) {
-                        println!("FOUND COLLISION");
+                        let solution_rotations = get_solution_from_two_way_hashmaps(
+                            hash,
+                            &rotated_cube,
+                            &hashes,
+                            &goal_hashes,
 
-                        let mut solution_rotations: Vec<Rotation> = vec![];
+                        ).unwrap();
 
-                        // Find route forward
-                        let mut lookup_cube = rotated_cube.clone();
-                        let mut lookup_hash = hash;
-                        'inner: loop {
-                            let lookup_rotation = hashes.get(&lookup_hash).unwrap();
-                            match lookup_rotation {
-                                Some(rotation) => {
-                                    println!("ROTATION {:?}", rotation);
-                                    lookup_cube = lookup_cube.rotate(&rotation.reverse());
-                                    lookup_hash = lookup_cube.get_hash();
-                                    solution_rotations.insert(0, rotation.clone());
-                                },
-                                None => {
-                                    println!("STUFF DONE 1");
-                                    break 'inner;
-                                }
-                            }
-                        }
-                        // Find route backward
-                        let mut lookup_cube = rotated_cube.clone();
-                        let mut lookup_hash = hash;
-                        'inner: loop {
-                            let lookup_rotation = goal_hashes.get(&lookup_hash).unwrap();
-                            match lookup_rotation {
-                                Some(rotation) => {
-                                    println!("ROTATION {:?}", rotation);
-                                    lookup_cube = lookup_cube.rotate(&rotation.reverse());
-                                    lookup_hash = lookup_cube.get_hash();
-                                    solution_rotations.push(rotation.reverse());
-                                },
-                                None => {
-                                    println!("STUFF DONE 2");
-                                    break 'inner;
-                                }
-                            }
-                        }
-
-                        let mut cube = goal_cube.clone();
-                        for rotation in solution_rotations.iter() {
-                            cube.print_rot(rotation);
-                            println!();
-                            cube = cube.rotate(rotation);
-                        }
-                        cube.print();
-
-                        println!("SOLUTION:");
-                        for rotation in solution_rotations.iter() {
-                            print!("{:?} ", rotation);
-                        }
-                        println!("");
+                        print_solution(&start_cube, &solution_rotations);
 
                         return;
                     }
