@@ -1053,122 +1053,22 @@ fn main() {
         assert_eq!(cube.rotate_6().get_hash(), cube.rotate_6_r().rotate_6_r().rotate_6_r().get_hash());
     }
 
-    // println!("CUBE:");
     let solved_cube= Cube::new();
-    // solved_cube.print();
 
-    // println!("GOAL CUBE:");
     let mut start_cube = Cube::new();
     start_cube.set_at(2, 3, 1);
     start_cube.set_at(2, 5, 3);
     start_cube.set_at(1, 5, 2);
     start_cube.set_at(3, 3, 2);
-    // start_cube.print();
-    // println!();
-
-    // let start_cube = Cube::new_shuffled(17);
 
     let solution = solve_cube_two_way_breath_first(&start_cube, &solved_cube);
 
     match solution {
         Some(solution) => {
-            println!("SOLUTION a):");
             print_solution(&start_cube, &solution);
         },
         None => {
             println!("NO SOLUTION FOUND");
         }
     }
-
-    return;
-
-    // let mut hashes: HashMap<Hash, Option<Rotation>> = HashMap::new();
-    // {
-    //     let mut old_cubes: Vec<Cube> = vec![solved_cube.clone()];
-    //     let mut new_cubes: Vec<Cube> = Vec::new();
-    //
-    //     hashes.insert(solved_cube.get_hash(), None);
-    //
-    //     let mut hash_collisions_total = 0;
-    //     for _ in 0..5 {
-    //         let mut hash_collisions = 0;
-    //
-    //         for cube in old_cubes.iter() {
-    //             let rotations = cube.get_rotations();
-    //             for rotation in all_rotations.iter() {
-    //             // for rotation in rotations {
-    //                 let rotated_cube = cube.rotate(&rotation);
-    //                 let hash = rotated_cube.get_hash();
-    //                 if hashes.contains_key(&hash) {
-    //                     hash_collisions += 1;
-    //                     hash_collisions_total += 1;
-    //                     continue;
-    //                 }
-    //                 hashes.insert(hash, Some(rotation.clone()));
-    //                 new_cubes.push(rotated_cube);
-    //             }
-    //         }
-    //
-    //         println!(
-    //             "GOAL Old: {}, New: {} Collisions: {}, CollisionsTot: {}, Total: {}",
-    //             old_cubes.len(), new_cubes.len(), hash_collisions, hash_collisions_total, hashes.len()
-    //         );
-    //
-    //         old_cubes = new_cubes;
-    //         new_cubes = Vec::new();
-    //     }
-    // }
-    //
-    // {
-    //     let mut goal_hashes: HashMap<Hash, Option<Rotation>> = HashMap::new();
-    //     let mut old_cubes: Vec<Cube> = vec![start_cube.clone()];
-    //     let mut new_cubes: Vec<Cube> = Vec::new();
-    //
-    //     goal_hashes.insert(start_cube.get_hash(), None);
-    //
-    //     let mut hash_collisions_total = 0;
-    //     for _ in 0..5 {
-    //         let mut hash_collisions = 0;
-    //
-    //         for cube in old_cubes.iter() {
-    //             let rotations = cube.get_rotations();
-    //             for rotation in all_rotations.iter() {
-    //             // for rotation in rotations {
-    //                 let rotated_cube = cube.rotate(&rotation);
-    //                 let hash = rotated_cube.get_hash();
-    //
-    //                 if goal_hashes.contains_key(&hash) {
-    //                     hash_collisions += 1;
-    //                     hash_collisions_total += 1;
-    //                     continue;
-    //                 }
-    //                 goal_hashes.insert(hash, Some(rotation.clone()));
-    //
-    //                 if hashes.contains_key(&hash) {
-    //                     let solution_rotations = get_solution_from_two_way_hashmaps(
-    //                         hash,
-    //                         &rotated_cube,
-    //                         &hashes,
-    //                         &goal_hashes,
-    //
-    //                     ).unwrap();
-    //
-    //                     print_solution(&start_cube, &solution_rotations);
-    //
-    //                     return;
-    //                 }
-    //
-    //                 new_cubes.push(rotated_cube);
-    //             }
-    //         }
-    //
-    //         println!(
-    //             "GOAL Old: {}, New: {} Collisions: {}, CollisionsTot: {}, Total: {}",
-    //             old_cubes.len(), new_cubes.len(), hash_collisions, hash_collisions_total, goal_hashes.len()
-    //         );
-    //
-    //         old_cubes = new_cubes;
-    //         new_cubes = Vec::new();
-    //     }
-    // }
 }
